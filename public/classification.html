@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Output Classification - PayFind Admin</title>
+    <link rel="stylesheet" href="/styles.css?v=2">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+      .classification-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 0.95rem;
+      }
+      .classification-table th {
+        padding: 12px 16px;
+        color: var(--text-admin-muted);
+        border-bottom: 2px solid var(--line-admin);
+        font-weight: 600;
+        position: sticky;
+        top: 0;
+        background: #ffffff;
+        z-index: 10;
+      }
+      .classification-table td {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--line-admin);
+        color: var(--text-admin);
+      }
+      .classification-table tbody tr:hover {
+        background: #F8FAFC;
+      }
+      .table-container {
+        height: 350px;
+        overflow-y: auto;
+        border: 1px solid var(--line-admin);
+        border-radius: 8px;
+      }
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+      .count-badge {
+        padding: 4px 12px;
+        border-radius: 99px;
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+      .count-badge.success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+      .count-badge.warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+      .count-badge.error { background: rgba(239, 68, 68, 0.1); color: var(--error); }
+    </style>
+  </head>
+  <body class="admin-theme">
+    <div class="admin-layout">
+      <aside class="admin-sidebar glass-panel">
+        <div class="sidebar-brand">
+          <h2>PayFind</h2>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="/dashboard" class="nav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            Overview
+          </a>
+          <a href="/analytics" class="nav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg>
+            Analytics
+          </a>
+          <a href="/segmentation" class="nav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            Segmentation
+          </a>
+          <a href="/classification" class="nav-item active">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+            Classification
+          </a>
+          <div style="margin-top:20px; border-top: 1px solid var(--line-admin); padding-top:20px;">
+            <a href="/client" class="nav-item" target="_blank" style="color: var(--text-admin-muted);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+              Open Client Hub
+            </a>
+          </div>
+        </nav>
+      </aside>
+
+      <main class="admin-main">
+        <header class="admin-header">
+          <div>
+            <h1 id="page-title">Dataset Classification</h1>
+            <p id="page-subtitle">Granular breakdown of the processed K-Means ML clusters.</p>
+          </div>
+        </header>
+
+        <div id="no-data-alert" class="alert info" style="margin-bottom: 24px; display: none;">
+          <strong>No ML Output Detected!</strong> Please go to the <strong>Segmentation</strong> page and drop your CSV dataset to generate the classification models first.
+        </div>
+
+        <div id="classification-content" style="display:none;">
+          <div class="tabs" style="display: flex; gap: 12px; margin-bottom: 16px;">
+            <button id="btn-allowed" class="tab-btn active" style="padding: 10px 20px; border-radius: 6px; border: 1px solid var(--success); background: rgba(16, 185, 129, 0.1); color: var(--success); font-weight: 600; cursor: pointer; transition: all 0.2s;">Allowed Segment</button>
+            <button id="btn-sus" class="tab-btn" style="padding: 10px 20px; border-radius: 6px; border: 1px solid var(--warning); background: #ffffff; color: var(--warning); font-weight: 600; cursor: pointer; transition: all 0.2s;">Suspicious Segment</button>
+            <button id="btn-blocked" class="tab-btn" style="padding: 10px 20px; border-radius: 6px; border: 1px solid var(--error); background: #ffffff; color: var(--error); font-weight: 600; cursor: pointer; transition: all 0.2s;">Blocked Segment</button>
+          </div>
+
+          <section id="section-allowed" class="admin-panel" style="margin-bottom: 32px; border-top: 4px solid var(--success);">
+            <div class="section-header">
+              <h3 style="margin: 0; color: var(--success); display: flex; align-items: center; gap: 8px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                Allowed Segment
+              </h3>
+              <span class="count-badge success" id="allowed-count">0</span>
+            </div>
+            <p class="muted" style="margin-top: -10px; margin-bottom: 16px;">These users fall perfectly within standard RFM variance. The system approved them immediately.</p>
+            <input id="allowed-search" type="text" placeholder="Search allowed users..." style="width: 100%; max-width: 320px; margin-bottom: 16px; padding: 10px 14px; border-radius: 8px; border: 1px solid #d1d5db; font-family: 'Inter', sans-serif;">
+            <div class="table-container">
+              <table class="classification-table">
+                <thead>
+                  <tr><th>User ID</th><th>Location (IP)</th><th>Avg Monetary (Rs)</th><th>Frequency (90d)</th><th>Recency (Days)</th></tr>
+                </thead>
+                <tbody id="allowed-table-body"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="section-sus" class="admin-panel" style="margin-bottom: 32px; display: none; border-top: 4px solid var(--warning);">
+            <div class="section-header">
+              <h3 style="margin: 0; color: var(--warning); display: flex; align-items: center; gap: 8px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                Suspicious Segment (OTP Mandatory)
+              </h3>
+              <span class="count-badge warning" id="sus-count">0</span>
+            </div>
+            <p class="muted" style="margin-top: -10px; margin-bottom: 16px;">These users display anomalous frequency or scale behavior. The system demands additional verification (OTP).</p>
+            <input id="sus-search" type="text" placeholder="Search suspicious users..." style="width: 100%; max-width: 320px; margin-bottom: 16px; padding: 10px 14px; border-radius: 8px; border: 1px solid #d1d5db; font-family: 'Inter', sans-serif;">
+            <div class="table-container">
+              <table class="classification-table">
+                <thead>
+                  <tr><th>User ID</th><th>Location (IP)</th><th>Avg Monetary (Rs)</th><th>Frequency (90d)</th><th>Recency (Days)</th></tr>
+                </thead>
+                <tbody id="sus-table-body"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="section-blocked" class="admin-panel" style="display: none; border-top: 4px solid var(--error);">
+            <div class="section-header">
+              <h3 style="margin: 0; color: var(--error); display: flex; align-items: center; gap: 8px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                Blocked Segment (Hard Decline)
+              </h3>
+              <span class="count-badge error" id="blocked-count">0</span>
+            </div>
+            <p class="muted" style="margin-top: -10px; margin-bottom: 16px;">These users exhibit extreme outlier properties indicative of mule accounts, takeover, or severe fraud. Blacklisted.</p>
+            <input id="blocked-search" type="text" placeholder="Search blocked users..." style="width: 100%; max-width: 320px; margin-bottom: 16px; padding: 10px 14px; border-radius: 8px; border: 1px solid #d1d5db; font-family: 'Inter', sans-serif;">
+            <div class="table-container">
+              <table class="classification-table">
+                <thead>
+                  <tr><th>User ID</th><th>Location (IP)</th><th>Avg Monetary (Rs)</th><th>Frequency (90d)</th><th>Recency (Days)</th></tr>
+                </thead>
+                <tbody id="blocked-table-body"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <div class="ai-chatbot-container">
+        <div id="ai-chat-window" class="ai-chat-window">
+          <div class="ai-chat-header">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path><path d="M22 12A10 10 0 1 1 12 2v10z"></path></svg>
+            <div>
+              <h3>PayFind Intelligence</h3>
+              <p>Fraud Analysis Assistant</p>
+            </div>
+          </div>
+          <div id="ai-chat-messages" class="ai-chat-messages">
+            <div class="chat-msg bot">Hi there! I am your AI assistant. How can I help you analyze the fraud metrics today?</div>
+          </div>
+          <div class="ai-chat-input-area">
+            <input type="text" id="ai-chat-input" placeholder="Ask about trends or anomalies..." autocomplete="off">
+            <button id="ai-chat-submit" style="color: white; border: none; cursor: pointer;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+          </div>
+        </div>
+        <button id="ai-chatbot-btn" class="ai-chatbot-btn">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+        </button>
+      </div>
+    </div>
+    <script type="module" src="/classification.js?v=3"></script>
+  </body>
+</html>

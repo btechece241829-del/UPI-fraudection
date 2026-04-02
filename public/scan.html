@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PayFind - Scanning</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body class="client-theme">
+    <main class="mobile-app">
+      <header class="mobile-header">
+        <div class="badge good" style="margin: 0 auto 12px; width: fit-content;">QR Scanned</div>
+        <h1>Connecting...</h1>
+        <p>Secure link established</p>
+      </header>
+
+      <div class="mobile-body">
+        <div id="scan-status" class="client-panel" style="text-align: center; padding: 48px 24px;">
+          <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 50%; background: var(--good-light-client); color: var(--good); margin-bottom: 24px;">
+             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          </div>
+          <h3>Redirecting to payment</h3>
+          <p class="muted" style="margin-top: 8px;">Opening the secure transaction view. Suspicious transfers will request an internal OTP.</p>
+        </div>
+
+        <div class="button-row" style="margin-top: auto;">
+          <a class="button-link secondary" href="/client" style="width: 100%;">Back to Start</a>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="/scan.js"></script>
+  </body>
+</html>

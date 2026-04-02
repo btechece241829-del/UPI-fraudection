@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PayFind - Secure Transfer</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body class="client-theme banking-client-ui">
+    <div class="banking-client-wrapper">
+      
+      <!-- Contextual Left Section -->
+      <div class="client-context">
+        <div style="font-size: 1.5rem; font-weight: 800; color: #1E4ED8; display: flex; align-items: center; gap: 8px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="#1E4ED8"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          PayFind <span style="font-weight: 500; font-size: 0.9rem; color: #6B7280; padding-left:8px; border-left:1px solid #E5E7EB;">Personal</span>
+        </div>
+        
+        <div style="margin-top: 64px;">
+          <h1 style="font-size: 2.2rem; color: #1F2937; margin-bottom: 16px; letter-spacing: -0.02em; font-weight: 800;">Secure Payment Portal</h1>
+          <p style="color: #4B5563; font-size: 1.05rem; line-height: 1.6; margin-bottom: 40px; max-width: 90%;">Send funds instantly with enterprise-grade protection. Every transaction is monitored in real-time by advanced machine learning models.</p>
+          
+          <div style="display: inline-flex; align-items: center; gap: 10px; background: #EFF6FF; padding: 12px 20px; border-radius: 8px; color: #1E4ED8; font-weight: 600; font-size: 0.95rem; border: 1px solid #DBEAFE;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            Secured by bank-grade encryption
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Interface Right Section -->
+      <div class="client-interface">
+        <form id="transaction-form" style="max-width: 380px; width: 100%; margin: 0 auto;">
+           <div id="form-alert" class="alert error hidden"></div>
+           <style>
+             .preset-button.active .avatar-ring { border-color: #1E4ED8 !important; background: #EFF6FF !important; color: #1E4ED8 !important; }
+             .preset-button:hover .avatar-ring { border-color: #D1D5DB !important; }
+           </style>
+
+           <!-- Recipient -->
+           <div style="margin-bottom: 24px;">
+             <label style="display: block; font-size: 0.9rem; font-weight: 600; color: #374151; margin-bottom: 8px;">Transfer To</label>
+             <input type="text" name="user_name" id="recipient" placeholder="User ID, UPI, or Account No." value="@arjun_kumar" required style="width: 100%; padding: 14px 16px; border: 1px solid #D1D5DB; border-radius: 12px; font-size: 1rem; color: #1F2937; outline: none; transition: border-color 0.2s, box-shadow 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.02);" onfocus="this.style.borderColor='#1E4ED8'; this.style.boxShadow='0 0 0 3px rgba(30,78,216,0.1)';" onblur="this.style.borderColor='#D1D5DB'; this.style.boxShadow='0 1px 2px rgba(0,0,0,0.02)';" autocomplete="off" />
+           </div>
+
+           <!-- Recent Contacts (Muted Avatars) -->
+           <div style="margin-bottom: 32px;">
+             <div style="font-size: 0.75rem; font-weight: 700; color: #9CA3AF; margin-bottom: 12px; letter-spacing: 0.05em; text-transform: uppercase;">Recent Contacts</div>
+             <div style="display: flex; gap: 16px; overflow-x: auto; padding-bottom: 4px;">
+               <div id="normal-demo" class="preset-button" data-preset="ok" style="text-align: center; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+                 <div class="avatar-ring" style="width: 44px; height: 44px; border-radius: 50%; background: #F3F4F6; color: #4B5563; display: flex; justify-content: center; align-items: center; font-weight: 700; margin-bottom: 6px; font-size: 0.9rem; border: 2px solid transparent; transition: 0.2s;">AK</div>
+                 <div style="font-size: 0.75rem; color: #4B5563; font-weight: 500;">Arjun</div>
+               </div>
+               <div id="suspicious-demo" class="preset-button" data-preset="suspect" style="text-align: center; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+                 <div class="avatar-ring" style="width: 44px; height: 44px; border-radius: 50%; background: #F3F4F6; color: #4B5563; display: flex; justify-content: center; align-items: center; font-weight: 700; margin-bottom: 6px; font-size: 0.9rem; border: 2px solid transparent; transition: 0.2s;">UN</div>
+                 <div style="font-size: 0.75rem; color: #4B5563; font-weight: 500;">Unknown</div>
+               </div>
+               <div id="blocked-demo" class="preset-button" data-preset="block" style="text-align: center; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+                 <div class="avatar-ring" style="width: 44px; height: 44px; border-radius: 50%; background: #F3F4F6; color: #4B5563; display: flex; justify-content: center; align-items: center; font-weight: 700; margin-bottom: 6px; font-size: 0.9rem; border: 2px solid transparent; transition: 0.2s;">SR</div>
+                 <div style="font-size: 0.75rem; color: #4B5563; font-weight: 500;">Flagged</div>
+               </div>
+             </div>
+           </div>
+
+           <!-- Amount Context -->
+           <div style="margin-bottom: 32px;">
+             <label style="display: block; font-size: 0.9rem; font-weight: 600; color: #374151; margin-bottom: 8px;">Amount</label>
+             <div style="position: relative;">
+               <span style="position: absolute; left: 18px; top: 12px; font-size: 1.4rem; font-weight: 700; color: #6B7280;">₹</span>
+               <input type="number" name="amount" id="amount" placeholder="0.00" required style="width: 100%; padding: 14px 16px 14px 44px; border: 1px solid #D1D5DB; border-radius: 12px; font-size: 1.4rem; font-weight: 700; color: #1F2937; outline: none; transition: border-color 0.2s, box-shadow 0.2s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);" onfocus="this.style.borderColor='#1E4ED8'; this.style.boxShadow='inset 0 2px 4px rgba(0,0,0,0.02), 0 0 0 3px rgba(30,78,216,0.1)';" onblur="this.style.borderColor='#D1D5DB'; this.style.boxShadow='inset 0 2px 4px rgba(0,0,0,0.02)';" autocomplete="off" />
+             </div>
+           </div>
+
+           <!-- Actions -->
+           <div style="display: flex; gap: 12px;">
+             <button type="button" class="billing-btn-secondary" style="flex: 1; padding: 16px; background: #FFFFFF; border: 1px solid #D1D5DB; border-radius: 12px; font-size: 1rem; font-weight: 600; color: #4B5563; cursor: pointer; transition: background 0.2s;">Save</button>
+             <button type="submit" id="send-btn" style="flex: 2; padding: 16px; background: #1E4ED8; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; color: #FFFFFF; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 12px rgba(30, 78, 216, 0.25);">Proceed Securely</button>
+           </div>
+        </form>
+
+        <section id="client-status" class="hidden" style="margin-top: 24px; max-width: 380px; width: 100%; margin: 0 auto;">
+          <section id="transaction-card" class="client-panel" style="margin-bottom: 24px; padding: 24px; border: 1px solid #E5E7EB; border-radius: 16px;"></section>
+          <section class="stack">
+            <section class="client-panel" style="padding: 24px; border: 1px solid #E5E7EB; border-radius: 16px;">
+              <h3 style="font-size:1.1rem; border-bottom: 1px solid #E5E7EB; padding-bottom:12px; margin-top:0;">Progress Timeline</h3>
+              <ul id="timeline" class="timeline"></ul>
+            </section>
+          </section>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- UPI PIN Modal -->
+    <div id="upi-modal" class="hidden" style="display: none; position: fixed; inset: 0; align-items: center; justify-content: center; z-index: 1000; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);">
+      <form id="upi-form" class="otp-box" style="background: white; padding: 32px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 400px; text-align: center;">
+         <div style="display: flex; justify-content: center; margin-bottom: 16px;">
+           <div style="width: 48px; height: 48px; background: #EFF6FF; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1E4ED8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+           </div>
+         </div>
+         <h3 style="margin-top:0; font-size: 1.4rem; color: #1F2937; font-weight: 800;">UPI PIN Required</h3>
+         <p style="color: #6B7280; font-size: 0.95rem; margin-bottom: 24px;">Enter your 6-digit secure UPI PIN to authorize this transfer.</p>
+         <div id="upi-alert" class="alert error hidden"></div>
+         <div style="position: relative; margin-bottom: 24px;">
+           <input type="password" inputmode="numeric" pattern="[0-9]*" id="upi-input" placeholder="••••••" maxlength="6" style="text-align:center; font-size: 2rem; letter-spacing: 0.5em; border: 1px solid #D1D5DB; width: 100%; border-radius: 12px; font-weight: 700; color: #1F2937; outline:none; transition: all 0.2s; padding: 16px;" onfocus="this.style.borderColor='#1E4ED8'; this.style.boxShadow='0 0 0 4px rgba(30,78,216,0.1)';" onblur="this.style.borderColor='#D1D5DB'; this.style.boxShadow='none';" autocomplete="off" required />
+         </div>
+         <button type="submit" id="upi-verify-btn" style="width: 100%; background: #1E4ED8; color: #fff; border: none; padding: 16px; font-size: 1.05rem; font-weight: 600; border-radius: 12px; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 12px rgba(30, 78, 216, 0.25);" onmouseover="this.style.background='#1D4ED8'" onmouseout="this.style.background='#1E4ED8'">Secure Submit</button>
+         <button type="button" id="upi-cancel-btn" style="width: 100%; background: transparent; color: #6B7280; border: none; padding: 12px; font-size: 0.95rem; font-weight: 600; margin-top: 8px; cursor: pointer; border-radius: 12px; transition: background 0.2s;" onmouseover="this.style.background='#F3F4F6'; this.style.color='#374151'" onmouseout="this.style.background='transparent'; this.style.color='#6B7280'">Cancel</button>
+      </form>
+    </div>
+
+    <!-- OTP Modal (Muted Context) -->
+    <div id="otp-modal" class="hidden" style="position: fixed; inset: 0; align-items: center; justify-content: center; z-index: 1000;">
+      <form id="otp-form" class="otp-box">
+         <h3 style="margin-top:0; font-size: 1.4rem; color: #1F2937; font-weight: 800;">Security Verification</h3>
+         <p style="color: #6B7280; font-size: 0.95rem; margin-bottom: 24px;">High-risk transaction perimeter alert. Enter the 6-digit OTP sent to your registered device.</p>
+         <div id="otp-alert" class="alert error hidden"></div>
+         <input type="text" id="otp-input" placeholder="------" maxlength="6" style="text-align:center; font-size: 1.8rem; letter-spacing: 0.2em; border: 1px solid #D1D5DB; width: 100%; border-radius: 12px; font-weight: 700; color: #1F2937; outline:none; transition: 0.2s; padding: 12px;" onfocus="this.style.borderColor='#1E4ED8';" onblur="this.style.borderColor='#D1D5DB';" autocomplete="off" required />
+         <button type="submit" id="verify-btn" style="width: 100%; background: #1E4ED8; color: #fff; border: none; padding: 16px; font-size: 1rem; font-weight: 600; border-radius: 12px; margin-top: 24px; cursor: pointer; transition: 0.2s;">Verify Transfer</button>
+      </form>
+    </div>
+    
+    <!-- Status Overlay -->
+    <div id="result-overlay" class="result-overlay hidden" style="position: fixed; inset: 0; align-items: center; justify-content: center; z-index: 1000;">
+      <div id="result-card" class="result-card status-box">
+         <div id="result-badge" class="badge good" style="margin-bottom: 24px; display:inline-flex; justify-content:center; text-transform:uppercase;">Status</div>
+         <div id="status-icon" style="margin-bottom: 24px; display:flex; justify-content:center;"></div>
+         <h2 id="result-title" style="margin: 0 0 12px; font-size: 1.6rem; color: #1F2937; font-weight: 800;"></h2>
+         <p id="result-copy" style="color: #6B7280; font-size: 1rem; margin-bottom: 32px;"></p>
+         <button type="button" id="result-reset" class="home-btn" style="width: 100%; background: #F3F4F6; border: 1px solid #D1D5DB; color: #374151; padding: 14px; font-size: 1rem; font-weight: 600; border-radius: 12px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='#E5E7EB'" onmouseout="this.style.background='#F3F4F6'">Start New Transfer</button>
+      </div>
+    </div>
+    
+    <script type="module" src="/client.js"></script>
+  </body>
+</html>
