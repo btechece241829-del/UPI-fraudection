@@ -436,7 +436,7 @@ function initChatbot() {
 async function bootstrap() {
   initChatbot();
   const serverInfo = await api("/api/server-info");
-  renderClientPageQr(serverInfo.lan_client_url);
+  renderClientPageQr("https://upi-fraudection-production.up.railway.app/");
   applySnapshot(await api("/api/dashboard/transactions"));
   connectEvents(null, (message) => {
     if (message.type === "snapshot") {
