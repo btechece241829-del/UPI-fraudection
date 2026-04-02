@@ -1,5 +1,7 @@
 # Fraud Detection Dashboard Demo
+https://upi-fraudection-production.up.railway.app/dashboard
 
+it is a hackathon project 
 Run the app:
 
 ```powershell
